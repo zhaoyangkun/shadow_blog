@@ -98,3 +98,15 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ![ntKP0A.png](https://s2.ax1x.com/2019/09/09/ntKP0A.png)
 
 ![ntKpOH.png](https://s2.ax1x.com/2019/09/09/ntKpOH.png)
+
+## 架构
+基于Django + Jquery + Vditor + django-rest-framework + H-ui + Boundless-UI
+
+## 鸣谢
+
+[Django](https://github.com/django/django)
+[Jquery](https://github.com/jquery/jquery)
+[Vditor](https://github.com/b3log/vditor)
+[Django restframework](https://github.com/encode/django-rest-framework)
+[Boundless-UI](https://github.com/zhaoyangkun/Boundless-UI)
+[H-ui](https://github.com/jackying/H-ui.admin)
