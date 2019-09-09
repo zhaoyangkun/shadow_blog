@@ -141,12 +141,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # github授权登录
 GITHUB_CLIENT_ID = '******'
 GITHUB_CLIENT_SECRET = '******'
-GITHUB_CALLBACK_URL = '******'  # 填写你的回调地址
+GITHUB_CALLBACK_URL = 'https://******'  # 填写你的回调地址
 
 # 邮件配置
 EMAIL_USE_SSL = True
 EMAIL_HOST = 'smtp.163.com'  # 如果是 163 改成 smtp.163.com，QQ 邮箱改为为 smtp.qq.com
 EMAIL_PORT = 465
-EMAIL_HOST_USER = '1040970792@163.com'  # 帐号
-EMAIL_HOST_PASSWORD = 'zykzyc19960331'  # 授权码
+EMAIL_HOST_USER = '******@163.com'  # 帐号
+EMAIL_HOST_PASSWORD = '******'  # 授权码
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
