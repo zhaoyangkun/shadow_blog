@@ -1,0 +1,173 @@
+<!--_meta 作为公共模版分离出去-->
+{% load staticfiles %}
+{% url 'sort' as sort_url %}
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="lib/html5shiv.js"></script>
+    <script type="text/javascript" src="lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/static/h-ui/css/H-ui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/static/h-ui.admin/css/H-ui.admin.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/lib/Hui-iconfont/1.0.8/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/static/h-ui.admin/skin/default/skin.css"
+          id="skin"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/static/h-ui.admin/css/style.css"/>
+    <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico"/>
+    <!--[if IE 6]>
+    <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <!--/meta 作为公共模版分离出去-->
+    <title>修改标签</title>
+    <meta name="keywords" content="H-ui.admin v3.1,H-ui网站后台模版,后台模版下载,后台管理系统模版,HTML后台模版下载">
+    <meta name="description" content="H-ui.admin v3.1，是一款由国人开发的轻量级扁平化网站后台模板，完全免费开源的网站后台管理系统模版，适合中小型CMS后台系统。">
+</head>
+<body>
+<article class="page-container">
+    <form action="{% url 'user' %}" method="post" class="form form-horizontal" id="form-change-password">
+        {% csrf_token %}
+        <label for="category_id"></label>
+        <input type="hidden" id="category_id" value="{{ category.id }}" name="id"/>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>标签名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <label for="newpassword"></label>
+                <input type="text" class="input-text" autocomplete="off" placeholder="标签名称" name="category_name"
+                       value="{{ category.category_name }}"
+                       id="category_name">
+            </div>
+        </div>
+
+        <input hidden name="is_parent" value="0">
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>所属分类：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <label for="new-password2"></label>
+                <select name="parent_id" id="parent_sort">
+                    <option value="" selected>所属分类</option>
+                    {% for parent_sort in parent_sorts %}
+                        {% if category.parent.id == parent_sort.id %}
+                            <option value="{{ parent_sort.id }}" selected>{{ parent_sort.category_name }}</option>
+                        {% else %}
+                            <option value="{{ parent_sort.id }}">{{ parent_sort.category_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;保存&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/static/h-ui.admin/js/H-ui.admin.js"></script>
+<!--/_footer /作为公共模版分离出去-->
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript"
+        src="{{ STATIC_URL }}H-ui-admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript"
+        src="{{ STATIC_URL }}H-ui-admin/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/global.js"></script>
+<script type="text/javascript">
+    $(function () {
+        check_parent();
+
+        $("#form-change-password").validate({
+            ignore: ":hidden:not(select)",//解决无法校验select
+            rules: {
+                category_name: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 16
+                },
+                is_parent: {
+                    required: true,
+                },
+                parent_id: {
+                    check_parent: $("#parent_sort option:selected").val(),
+                }
+            },
+            messages: {
+                category_name: {
+                    required: "请输入分类名"
+                },
+                is_parent: {
+                    required: "请勾选是否是主类"
+                },
+            },
+            {#onkeyup: false,#}
+            {#focusCleanup: true,#}
+            {#success: "valid",#}
+            submitHandler: function (form) {
+                $(form).ajaxSubmit({
+                    type: 'PATCH',
+                    url: '{{ sort_url }}',
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        {#console.log(data);#}
+                        if (data.code === 1) {
+                            layer.msg(data.msg, {icon: 6, time: 1000}, function () {
+                                layer.close(layer.index);
+                                window.parent.location.reload();
+                            });
+                        } else if (data.code === 0) {
+                            layer.msg(data.msg, {icon: 5, time: 1000});
+                        }
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+        });
+    });
+
+    /*生成主类option*/
+    $("#is_parent").change(function () {
+        $("#parent_sort").empty();
+        if ($("#is_parent option:selected").val() === '0') {
+            $("#parent_sort").html("<option value=\"\">所属分类</option>");
+            $.getJSON(
+                "{% url 'parentSorts' %}",
+                function (data) {
+                    /*data表示遍历对象，i表示数组下标，val表示下标对应的值*/
+                    $.each(data, function (i, val) {
+                        $("#parent_sort").append('<option value="' + val.id + '">'
+                            + val.category_name + '</option>');
+                    });
+                }
+            );
+        } else if ($("#is_parent option:selected").val() === '1' || $("#is_parent option:selected").val() === '') {
+            $("#parent_sort").html("<option value=\"\">所属类别</option>");
+        }
+    });
+
+    //验证所属类别下拉框
+    function check_parent() {
+        $.validator.addMethod('check_parent', function (value) {
+            return !(value === '' || value == null);
+        }, '请选择所属类别')
+    }
+
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

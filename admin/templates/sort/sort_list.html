@@ -1,0 +1,232 @@
+{% load staticfiles %}
+{% url 'sort' as sort_url %}
+<!DOCTYPE HTML>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="lib/html5shiv.js"></script>
+    <script type="text/javascript" src="lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/static/h-ui/css/H-ui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/static/h-ui.admin/css/H-ui.admin.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/lib/Hui-iconfont/1.0.8/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/static/h-ui.admin/skin/default/skin.css"
+          id="skin"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/static/h-ui.admin/css/style.css"/>
+    <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico"/>
+    <!--[if IE 6]>
+    <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>文章分类管理</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 文章管理 <span
+        class="c-gray en">&gt;</span> 分类管理 <a class="btn btn-success radius r"
+                                                style="line-height:1.6em;margin-top:3px"
+                                                href="javascript:location.replace(location.href);" title="刷新"><i
+        class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+    <div class="text-c">
+{% comment %}        <span class="select-box inline">
+            <select name="is_parent" id="is_parent" class="select">
+                <option value="">是否是主类</option>
+                <option value="1">是</option>
+                <option value="0">否</option>
+            </select>
+        </span>{% endcomment %}
+{% comment %}        <span class="select-box inline">
+            <select name="parent_sort" id="parent_sort" class="select">
+                <option value="">所属主类</option>
+{#                <option value="1">技术</option>#}
+{#                <option value="2">生活</option>#}
+            </select>
+		</span>{% endcomment %}
+        <input type="text" class="input-text" style="width:250px" placeholder="请输入分类名称" id="search-input"
+               name="search-input">
+        <button onclick="search(1)" type="submit" class="btn btn-success radius" id="search" name="search"><i
+                class="Hui-iconfont">&#xe665;</i> 搜索
+        </button>
+    </div>
+    <div class="cl pd-5 bg-1 bk-gray mt-20"><span class="l">
+{#        <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>#}
+        <a href="javascript:;" onclick="layer_open('添加文章分类','sortAddDis','500','300')" class="btn btn-primary radius"><i
+                class="Hui-iconfont">&#xe600;</i> 添加文章分类</a></span>
+        <span class="r" id="total_number">共有数据：<strong>88</strong> 条</span></div>
+    <div class="mt-20">
+        <table class="table table-border table-bordered table-hover table-bg table-sort">
+            <thead>
+            <tr class="text-c">
+                <th><input type="checkbox" name="" value=""></th>
+                <th>分类名称</th>
+{#                <th>主类与否</th>#}
+{#                <th>所属主类</th>#}
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="data-body">
+            {% comment %}<tr class="text-c">
+                <td><input type="checkbox" value="1" name=""></td>
+                <td>生活</td>
+                <td>是</td>
+                <td>无</td>
+                <td class="td-manage">
+                    <a style="text-decoration:none" onClick="picture_stop(this,'10001')" href="javascript:;" title="下架"><i
+                            class="Hui-iconfont">&#xe6de;</i></a>
+                    <a style="text-decoration:none" class="ml-5"
+                       onClick="picture_edit('图库编辑','picture-add.html','10001')" href="javascript:;" title="编辑"><i
+                            class="Hui-iconfont">&#xe6df;</i></a>
+                    <a style="text-decoration:none" class="ml-5" onClick="picture_del(this,'10001')" href="javascript:;"
+                       title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                </td>
+            </tr>{% endcomment %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="pageNav" class="pageNav"
+         style="clear: both; align-items: center; display: -webkit-flex; justify-content: center;">
+        <span id="Pagination" style=""></span>
+    </div>
+
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/static/h-ui.admin/js/H-ui.admin.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+{#<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>#}
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/global.js"></script>
+<script type="text/javascript">
+    $(function () {
+        search(1);
+    });
+
+    function search(page) {
+        let is_parent = 1;
+        let parent_id = $("#parent_sort").val();
+        let key = $("#search-input").val();
+        $("#data-body").html("");
+        $.ajax({
+            type: "GET",
+            url: "sort",
+            data: {"page": page, "is_parent": is_parent, "parent_id": parent_id, "key": key},
+            datatype: "json",
+            success: function (data) {
+                initData(data);
+                toPage(data);
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    //初始化数据
+    function initData(data) {
+        if (data.results.length === 0) {
+            $("#data-body").append("<tr><td colspan='8' style='text-align:center; font-size:16px;' class='text-center'>暂无数据</td></tr>");
+        } else {
+            for (let i = 0; i < data.results.length; i++) {
+                {#console.log(data.results[i]);#}
+{% comment %}                let is_parent = data.results[i].is_parent === 1 ? "是" : "否";
+                let parent_sort = data.results[i].parent == null ? "" : data.results[i].parent.category_name;{% endcomment %}
+                $("#data-body").append(
+                    '<tr class="text-c">\n' +
+                    '<td><input type="checkbox" value="' + data.results[i].id + '" name=""></td>\n' +
+                    '<td>' + data.results[i].category_name + '</td>\n' +
+{% comment %}                    '<td>' + is_parent + '</td>\n' +
+                    '<td>' + parent_sort + '</td>\n' +{% endcomment %}
+                    '<td class="td-manage">\n' +
+                    {% comment %}                    '<a style="text-decoration:none" onClick="picture_stop(this,\'10001\')" href="javascript:;" title="下架"><i\n' +
+                                        'class="Hui-iconfont">&#xe6de;</i></a>\n' +{% endcomment %}
+                    '<a style="text-decoration:none" class="ml-5"\n' +
+                    'onClick="layer_open(\'编辑分类\',\'sortEditDis/' + data.results[i].id + '/\',\'500\',\'300\')" href="javascript:;" title="编辑"><i\n' +
+                    'class="Hui-iconfont">&#xe6df;</i></a>\n' +
+                    '<a style="text-decoration:none" class="ml-5" onclick="item_del(this,' + data.results[i].id + ')" href="javascript:;"\n' +
+                    'title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>\n' +
+                    '</td>\n' +
+                    '</tr>')
+            }
+        }
+        $("#total_number").html("共有数据：<strong>" + data.count + "</strong> 条 ");
+    }
+
+    //分页
+    function toPage(data) {
+        laypage({
+            cont: $("#Pagination"),//分页容器的id
+            {#count: data.count, //总记录条数#}
+            pages: data.total_pages,//总页数
+            skip: true, //是否开启跳页
+            curr: data.current_page, //当前页
+            skin: '#5A98DE',  //当前页的颜色
+            first: true,
+            last: true,
+            jump: function (obj, first) {
+                //首次不执行
+                if (!first) {
+                    search(obj.curr);
+                }
+            }
+        });
+    }
+
+    /*生成主类option*/
+    $("#is_parent").change(function () {
+        $("#parent_sort").empty();
+        if ($("#is_parent option:selected").val() === '0') {
+            $("#parent_sort").html("<option value=\"\">所属主类</option>");
+            $.getJSON("{% url 'parentSorts' %}", function (data) {
+                    /*data表示遍历对象，i表示数组下标，val表示下标对应的值*/
+                    $.each(data, function (i, val) {
+                        {#console.log(val);#}
+                        $("#parent_sort").append('<option value="' + val.id + '">'
+                            + val.category_name + '</option>');
+                    });
+                }
+            );
+        }
+        if ($("#is_parent option:selected").val() === '1' || $("#is_parent option:selected").val() === '') {
+            $("#parent_sort").html("<option value=\"\">所属主类</option>");
+        }
+    });
+
+    //删除
+    function item_del(obj, id) {
+        layer.confirm('确认要删除吗？', function (index) {
+            $.ajax({
+                url: "{% url 'sort' %}",
+                type: 'DELETE',
+                headers: {'X-CSRFToken': getCsrfToken()},
+                data: {"id": id},
+                success: function (data) {
+                    if (data.code === 1) {
+                        layer.msg(data.msg, {icon: 6, time: 1000}, function () {
+                            location.reload();
+                        });
+                    } else if (data.code === 0) {
+                        layer.msg(data.msg, {icon: 5, time: 1000});
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        });
+    }
+
+
+</script>
+</body>
+</html>

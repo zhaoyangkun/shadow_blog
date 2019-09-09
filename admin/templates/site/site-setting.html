@@ -1,0 +1,333 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/static/h-ui/css/H-ui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/static/h-ui.admin/css/H-ui.admin.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/lib/Hui-iconfont/1.0.8/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/static/h-ui.admin/skin/default/skin.css"
+          id="skin"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}H-ui-admin/static/h-ui.admin/css/style.css"/>
+    <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico"/>
+    <!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+    <!--/meta 作为公共模版分离出去-->
+    <title>基本设置</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页
+    <span class="c-gray en">&gt;</span>
+    基础设置
+    <span class="c-gray en">&gt;</span>
+    站点设置
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+       href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+    <div class="form form-horizontal" id="form-article-add">
+        <div id="tab-system" class="HuiTab">
+            <div class="tabBar cl">
+                <span>基本设置</span>
+                {% comment %}                <span>安全设置</span>
+                <span>邮件设置</span>
+                <span>其他设置</span>{% endcomment %}
+            </div>
+
+            <form class="tabCon" id="site-form">
+                {% csrf_token %}
+                <input hidden id="id" name="id" value="{{ site.id }}">
+
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">网站logo：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="file" name="logo" id="img">
+                    </div>
+                </div>
+
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2"></label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        {% if site.logo %}
+                            <img id="img_show" style="max-height: 135px; max-width: 240px"
+                                 src="{{ MEDIA_URL }}{{ site.logo }}" alt="">
+                        {% else %}
+                            <img id="img_show" style="max-height: 135px; max-width: 240px"
+                                 src="{{ STATIC_URL }}img/none.png" alt="">
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">
+                        <span class="c-red">*</span>
+                        网站名称：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" name="site_name" id="site_name" placeholder="不能超过255个字符"
+                               value="{{ site.site_name | default_if_none:"" }}"
+                               class="input-text">
+                    </div>
+                </div>
+
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">
+                        <span class="c-red">*</span>
+                        关键词：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" id="keywords" name="keywords" placeholder="用英文,隔开，不能超过255个字符"
+                               value="{{ site.keywords | default_if_none:"" }}"
+                               class="input-text">
+                    </div>
+                </div>
+
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">
+                        <span class="c-red">*</span>
+                        描述：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" name="description" id="description" placeholder="不能超过255个字符"
+                               value="{{ site.description | default_if_none:"" }}"
+                               class="input-text">
+                    </div>
+                </div>
+
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">
+                        <span class="c-red">*</span>
+                        网站所有者：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" name="author" id="author" placeholder="请输入所有者名称"
+                               value="{{ site.author | default_if_none:"" }}" class="input-text">
+                    </div>
+                </div>
+
+                {% comment %}                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">
+                        {#                        <span class="c-red">*</span>#}
+                        底部版权信息：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input readonly type="text" id="copyright_info" name="copyright_info" placeholder="请输入版权信息"
+                               value="{{ site.copyright_info | default_if_none:"" }}" class="input-text">
+                    </div>
+                </div>{% endcomment %}
+
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">备案号：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" id="record_number" name="record_number" placeholder="京ICP备00000000号"
+                               value="{{ site.record_number | default_if_none:"" }}" class="input-text">
+                    </div>
+                </div>
+
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">统计代码：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <textarea placeholder="暂时不可用" name="statistic_code" id="statistic_code"
+                                  class="textarea">{{ site.statistic_code | default_if_none:"" }}</textarea>
+                    </div>
+                </div>
+                <div class="row cl">
+                    <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                        <button class="btn btn-primary radius" type="submit"><i
+                                class="Hui-iconfont">&#xe632;</i> 保存
+                        </button>
+                        <button onClick="layer_close();" class="btn btn-default radius" type="button">
+                            &nbsp;&nbsp;取消&nbsp;&nbsp;
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            {% comment %}            <div class="tabCon">
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">允许访问后台的IP列表：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <textarea class="textarea" name="" id=""></textarea>
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">后台登录失败最大次数：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" class="input-text" value="5" id="" name="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabCon">
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">邮件发送模式：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" class="input-text" value="" id="" name="">
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">SMTP服务器：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" id="" value="" class="input-text">
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">SMTP 端口：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" class="input-text" value="25" id="" name="">
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">邮箱帐号：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" class="input-text" value="5" id="emailName" name="emailName">
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">邮箱密码：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="password" id="email-password" value="" class="input-text">
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-2">收件邮箱地址：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" id="email-address" value="" class="input-text">
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabCon">
+            </div>{% endcomment %}
+        </div>
+
+        {% comment %}        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <button onClick="article_save_submit();" class="btn btn-primary radius" type="submit"><i
+                        class="Hui-iconfont">&#xe632;</i> 保存
+                </button>
+                <button onClick="layer_close();" class="btn btn-default radius" type="button">
+                    &nbsp;&nbsp;取消&nbsp;&nbsp;
+                </button>
+            </div>
+        </div>{% endcomment %}
+    </div>
+</div>
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/static/h-ui.admin/js/H-ui.admin.js"></script>
+<!--/_footer /作为公共模版分离出去-->
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript"
+        src="{{ STATIC_URL }}H-ui-admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript"
+        src="{{ STATIC_URL }}H-ui-admin/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}H-ui-admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}vditor/js/vditor.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/compress.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/global.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+        $("#tab-system").Huitab({
+            index: 0
+        });
+
+        $("#site-form").validate({
+            {#ignore: ":hidden:not(select)",//解决无法校验select#}
+            rules: {
+                site_name: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 255
+                },
+                keywords: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 255
+                },
+                description: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 255
+                },
+                copyright_info: {
+                    maxlength: 255
+                },
+                record_number: {
+                    maxlength: 255
+                },
+                statistic_code: {
+                    maxlength: 1000
+                },
+            },
+            messages: {},
+            {#onkeyup: false,#}
+            {#focusCleanup: true,#}
+            success: "valid",
+            submitHandler: function (form) {
+                if ($("#id").val() === "" || $("#id").val() == null) {
+                    create_site(form);
+                } else {
+                    update_site(form);
+                }
+            }
+        });
+    });
+
+    function create_site(form) {
+        $(form).ajaxSubmit({
+            type: 'POST',
+            url: '{% url 'site_api' %}',
+            data: $(form).serialize(),
+            success: function (data) {
+                if (data.code === 1) {
+                    layer.msg(data.msg, {icon: 6, time: 1000}, function () {
+                        window.location.reload();
+                    });
+                } else if (data.code === 0) {
+                    layer.msg(data.msg, {icon: 5, time: 1000});
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function update_site(form) {
+        $(form).ajaxSubmit({
+            type: 'PATCH',
+            url: '{% url 'site_api' %}',
+            data: $(form).serialize(),
+            success: function (data) {
+                if (data.code === 1) {
+                    layer.msg(data.msg, {icon: 6, time: 1000}, function () {
+                        window.location.reload();
+                    });
+                } else if (data.code === 0) {
+                    layer.msg(data.msg, {icon: 5, time: 1000});
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

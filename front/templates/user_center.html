@@ -1,0 +1,298 @@
+{% load staticfiles %}
+{% load compress %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+    <meta charset="UTF-8">
+    <title>用户中心</title>
+    {% compress css %}
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/user_center.css"/>
+    {% endcompress %}
+    <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico"/>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+{% include 'base.html' %}
+
+<div id="user_center_big_bg" class="div_in_juzhong ">
+    <div id="middle_bg">
+
+        <div id="left_bg" class="div_in_juzhong">
+            <div id="test_bg">
+                <ul class="sort_name">
+                    <li class="test"><a class="sort-title">用户中心</a></li>
+                    <li class="test"><a class="sort on" href="#">个人信息</a></li>
+                    <li class="test"><a class="sort" href="#">账号安全</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="right_bg" class="div_in_juzhong">
+            <div id="r_bg" class="user-form">
+                {% csrf_token %}
+                <div class="left_20">
+                    <div class="left_20_head1 div_in_juzhong">
+                        <span class="head">用户头像</span>
+                    </div>
+                    <div class="left_20_head div_in_juzhong">
+                        <span class="head"></span>
+                    </div>
+                    <div class="left_20_head1 div_in_juzhong">
+                        <span class="head">账号</span>
+                    </div>
+                    <div class="left_20_head1 div_in_juzhong">
+                        <span class="head">昵称</span>
+                    </div>
+                    <div class="left_20_head1 div_in_juzhong">
+                        <span class="head">性别</span>
+                    </div>
+                    <div class="left_20_head1 div_in_juzhong">
+                        <span class="head">手机号码</span>
+                    </div>
+                    <div class="left_20_head1 div_in_juzhong">
+                        <span class="head">新密码</span>
+                    </div>
+                    <div class="left_20_head1 div_in_juzhong">
+                        <span class="head">确认密码</span>
+                    </div>
+                    <div class="left_20_head1 div_in_juzhong">
+                        <span class="head">出生日期</span>
+                    </div>
+                </div>
+
+                <div class="right_80">
+                    <form id="user_form" enctype="multipart/form-data">
+                        <div id="user_img_box" class="head_bg1 div_in_chuizhi upload-file">
+                            <input type="file" id="user_img" name="user_img"/>
+                            <span class="tip">点击上传图片</span>
+                        </div>
+                        <div class="head_bg div_in_chuizhi">
+                            {% if user.user_img %}
+                                <div class="img-box"><img src="{{ MEDIA_URL }}{{ user.user_img }}" alt="" id="img_head">
+                                </div>
+                            {% else %}
+                                <div class="img-box"><img src="{{ STATIC_URL }}img/person.svg" alt="" id="img_head">
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="head_bg1 div_in_chuizhi">
+                            <input readonly class="input_test1" name="user_name" id="user_name"
+                                   value="{{ user.user_name }}"/>
+                            {#                            <span class="red-s">用户名无法修改</span>#}
+                        </div>
+                        <div class="head_bg1 div_in_chuizhi">
+                            <input class="input_test1" name="nick_name" id="nick_name"
+                                   value="{{ user.nick_name | default_if_none:'' }}">
+                        </div>
+                        <div class="head_bg1 div_in_chuizhi">
+                            {% if user.sex == 1 %}
+                                <input value="1" name="sex" type="radio" checked="checked"/>男
+                                <input value="0" class="radio-sex" name="sex" type="radio"/>女
+                            {% else %}
+                                <input value="1" name="sex" type="radio"/>男
+                                <input value="0" class="radio-sex" name="sex" type="radio" checked="checked"/>女
+                            {% endif %}
+                        </div>
+                        <div class="head_bg1 div_in_chuizhi">
+                            <input class="input_test1" id="phone" type="tel" name="mobile_phone"
+                                   value="{{ user.mobile_phone|default_if_none:'' }}">
+                        </div>
+
+                        <div class="head_bg1 div_in_chuizhi">
+                            <input id="password_1" name="password_1" class="input_test1" type="password">
+                            {#                            <span class="red-s">密码为空表示不修改密码</span>#}
+                        </div>
+
+                        <div class="head_bg1 div_in_chuizhi">
+                            <input id="password" name="password" class="input_test1" type="password">
+                        </div>
+
+
+                        <div class="head_bg1 div_in_chuizhi">
+                            <input class="input_test1" style="border: #e1e1e8 1px solid; height: 30px" type="date"
+                                   name="birthday"
+                                   id="birthday" value="{{ user.birthday|date:'Y-m-d' }}">
+                        </div>
+                        <div class="head_bg2 div_in_chuizhi">
+                            <button class="button_save" type="button" onclick="edit_user()">保存</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--尾部-->
+{% include 'foot.html' %}
+
+<!--脚本-->
+{% compress js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/sweetalert.min.js' %}"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/global.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/compress.js"></script>
+{% endcompress %}
+<script type="text/javascript">
+    $(function () {
+        $("#user_img").change(function (e) {
+            let tip = $('.tip');
+            //获取目标文件
+            let file = e.target.files || e.dataTransfer.files;
+            //如果目标文件存在
+            if (file) {
+                //显示文件名
+                let arr = $(this).val().split('\\');
+                let fileName = arr[arr.length - 1];
+                tip.text(fileName);
+                //定义一个文件阅读器
+                let reader = new FileReader();
+                //文件装载后将其显示在图片预览里
+                reader.onload = function () {
+                    $("#img_head").attr("src", this.result);
+                };
+                //装载文件
+                reader.readAsDataURL(file[0]);
+            }
+        });
+    });
+
+    function edit_user() {
+        if (document.getElementById("user_img").value !== "") {
+            if (!checkType()) {
+                swal({text: "请上传图片类型的文件!", icon: "warning", timer: 1500});
+                return;
+            }
+            if (!checkImgSize()) {
+                swal({text: "图片大小不能超过1M!", icon: "warning", timer: 1500});
+                return;
+            }
+        }
+        if ($("#nick_name").val() === "") {
+            swal({text: "请输入昵称", icon: "warning", timer: 1500});
+            return;
+        }
+        if ($("input[nam='sex']").val() === "") {
+            swal({text: "请选择性别", icon: "warning", timer: 1500});
+            return;
+        }
+        if ($("#phone").val() === "") {
+            swal({text: "请输入手机号码", icon: "warning", timer: 1500});
+            return;
+        }
+        if (checkPhone($("#phone").val()) === false) {
+            swal({text: "手机号码格式不正确", icon: "warning", timer: 1500});
+            return;
+        }
+        if ($("#password_1").val() !== "" && $("#password").val() === "") {
+            swal({text: "请输入确认密码", icon: "warning", timer: 1500});
+            return;
+        }
+        if ($("#password_1").val() === "" && $("#password").val() !== "") {
+            swal({text: "请输入新密码", icon: "warning", timer: 1500});
+            return;
+        }
+        if ($("#password_1").val() !== $("#password").val()) {
+            swal({text: "两次密码不一致", icon: "warning", timer: 1500});
+            return;
+        }
+        let formData = new FormData($("#user_form")[0]);
+        if (fileIsNone()) {
+            submitForm(formData);
+            return;
+        }
+        //压缩图片
+        lrz(document.querySelector('input[type=file]').files[0], {
+            quality: 0.3 //设置压缩率
+        }).then(function (rst) {
+            /* 处理成功后执行 */
+            //rst.formData.append('base64img', rst.base64); // 添加额外参数
+            formData.delete('user_img');
+            formData.append("user_img", rst.file, "file_" + Date.parse(new Date()) + ".jpg"); //  文件对象
+            submitForm(formData);
+        }).catch(function (err) {
+            /* 处理失败后执行 */
+            console.log("压缩失败");
+        }).always(function () {
+            /* 必然执行 */
+        });
+    }
+
+    //上传表单
+    function submitForm(formData) {
+        $.ajax({
+            url: "{% url 'userApi' %}",
+            type: 'POST',
+            data: formData,
+            dataType: "JSON",
+            contentType: false,
+            processData: false,
+            cache: false,
+            success: function (data) {
+                console.log(data);
+                if (data.code === 1) {
+                    swal({
+                        title: "提示",
+                        text: data.msg,
+                        icon: "success",
+                        timer: 1500,
+                    }).then((value) => {
+                        location.reload(true);
+                    });
+                    setTimeout("location.reload(true);", 1500);
+                }
+                if (data.code === 0) {
+                    swal({
+                        title: "提示",
+                        text: data.msg.content[0],
+                        icon: "error",
+                        timer: 1500,
+                    })
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    //检验文件类型
+    function checkType() {
+        //得到上传文件的值
+        let fileName = document.getElementById("user_img").value;
+        //返回String对象中子字符串最后出现的位置.
+        let seat = fileName.lastIndexOf(".");
+        //返回位于String对象中指定位置的子字符串并转换为小写.
+        let extension = fileName.substring(seat).toLowerCase();
+        //判断允许上传的文件格式
+        let allowed = [".jpg", ".gif", ".png", ".jpeg"];
+        for (let i = 0; i < allowed.length; i++) {
+            if (!(allowed[i] !== extension)) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    //检验文件大小
+    function checkImgSize() {
+        let file = document.getElementById("user_img");
+        return (file.files[0].size) / 1024 <= 1024;
+    }
+
+    //检验文件是否为空
+    function fileIsNone() {
+        let fileName = document.getElementById("user_img").value;
+        return fileName === "" || fileName == null;
+    }
+</script>
+</body>
+</html>

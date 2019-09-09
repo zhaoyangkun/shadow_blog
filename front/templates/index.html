@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>{{ site.site_name | default_if_none:"Shadow Blog" }}</title>
+{% endblock %}
+
+{% block sort %}
+    <div class="nb-a-holder" id="home"><a id="active" class="nb-a ta-c" href="/">首页</a></div>
+    <div class="nb-a-holder">
+        <a class="nb-a ta-c" href="{% url 'category_all' %}">分类</a>
+        <ul id="category-ul" class="nav-ul" style="display: none;">
+            {% comment %}                <li class="nav-li nav-li-bd ta-c"><a href="#">HTML</a></li>
+                <li class="nav-li nav-li-bd ta-c"><a href="#">CSS</a></li>
+                <li class="nav-li nav-li-bd ta-c"><a href="#">JS</a></li>
+                <li class="nav-li ta-c"><a href="#">vue.js</a></li>{% endcomment %}
+        </ul>
+    </div>
+    <div class="nb-a-holder"><a class="nb-a ta-c" href="{% url 'label_wall_all' %}">标签墙</a></div>
+    <div class="nb-a-holder"><a class="nb-a ta-c" href="{% url 'archive_all' %}">归档</a></div>
+    <div class="nb-a-holder"><a class="nb-a ta-c" href="{% url 'links' %}">友情链接</a></div>
+{% endblock %}
+
+{% block content %}
+    {% load staticfiles %}
+    {% load compress %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="HandheldFriendly" content="true">
+        <meta charset="UTF-8">
+        {% compress css %}
+            <link rel="stylesheet" type="text/css" href="{% static 'css/myPagination.css' %}">
+            <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+        {% endcompress %}
+        <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    </head>
+    <body>
+
+    <!--主体-->
+    <div class="big-container">
+        <article class="article">
+            <!--左容器-->
+            <div class="left-holder">
+
+                {% comment %}                <!-- 轮播-->
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        {% for slide in slide_list %}
+                            <div class="swiper-slide">
+                                <div class="title" data-swiper-parallax="-130%">
+                                    <!--<h4>做博客网站的初衷</h4>-->
+                                </div>
+                                <div class="img-box"><img alt="" src="{{ MEDIA_URL }}{{ slide.img }}"
+                                                          style="transform:translateX(0);">
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="button-prev button">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 350 160 90">
+                            <g id="arrow-svg-home">
+                                <g id="circ" class="cls-1">
+                                    <circle cx="42" cy="42" r="40" class="cls-4"></circle>
+                                </g>
+                                <g id="arrow">
+                                    <path id="arrow-trg"
+                                          d="M.983,6.929,4.447,3.464.983,0,0,.983,2.482,3.464,0,5.946Z"></path>
+                                </g>
+                                <path id="line" d="M120,0H0" class="cls-3"></path>
+                            </g>
+                        </svg>
+                    </div>
+                    <!--左箭头-->
+                    <div class="button-next button">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 350 160 90">
+                            <g id="arrow-svg-home">
+                                <g id="circ" class="cls-1">
+                                    <circle cx="42" cy="42" r="40" class="cls-4"></circle>
+                                </g>
+                                <g id="arrow">
+                                    <path id="arrow-trg" d="M.983,6.929,4.447,3.464.983,0,0,.983,2.482,3.464,0,5.946Z"
+                                          class="cls-2"></path>
+                                </g>
+                                <path id="line" d="M120,0H0" class="cls-3"></path>
+                            </g>
+                        </svg>
+                    </div>
+                    <!--右箭头-->
+                </div>{% endcomment %}
+
+                <!--文章内容-->
+                <div id="article-holder" style="width: 100%; float: left">
+                    {% for article in article_list %}
+                        <div class="article-box">
+                            <div class="ab-content">
+                                <div class="article-title"><a
+                                        href="/front/articleDetail/{{ article.id }}/">{{ article.title }}</a></div>
+                                <div class="article-cate"><a
+                                        href="/front/category/{{ article.category.parent.category_name }}">{{ article.category.parent.category_name }}</a>
+                                    <a style="color:#a6a6a6">/</a>
+                                    <a href="/front/label/{{ article.category.category_name }}">{{ article.category.category_name }}</a>
+                                </div>
+                                <a href="/front/articleDetail/{{ article.id }}/" class="article-img-box">
+                                    <img class="article-img"
+                                         data-original="{{ MEDIA_URL }}{{ article.img }}"
+                                         alt=""
+                                         src="{{ MEDIA_URL }}{{ article.img }}"
+                                         style="">
+                                </a>
+                                <div class="article-detail-box c-666">
+                                    {{ article.content | slice:":200" }}
+                                </div>
+                                <span class="article-tail-box">
+                                <i class="fl" style="background-image: url('{{ STATIC_URL }}img/read-index.svg')"></i>
+                                <span class="read-number c-999 fl">{{ article.read_number }}</span>
+                                <i class="fl"
+                                   style="background-image: url('{{ STATIC_URL }}img/comment-index.svg')"></i>
+                                <span class="comment-number c-999 fl">{{ article.comment_number }}</span>
+                                <span class="article-date c-999">{{ article.gmt_created | date:'Y-m-d' }}</span>
+                                <span class="article-author one-line-overflow c-999">{{ article.user.user_name }}</span>
+                             </span>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="article-box">
+                            <div class="ab-content" style="height:280px; line-height:280px; text-align:center;">
+                                <h1>暂无数据</h1>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!--分页指示器-->
+                <div id="pagination" class="pagination fl"></div>
+            </div>
+
+            <!--右容器-->
+            <div class="right-holder">
+
+                <!--个人介绍-->
+                <ul class="info-container">
+                    <li class="person-intro-title"><h1>我的名片</h1></li>
+                    <li class="person-img-li">
+                        {% if admin_user.user_img %}
+                            <img alt="头像" id="person-img" src="{{ MEDIA_URL }}{{ admin_user.user_img }}">
+                        {% else %}
+                            <img alt="头像" id="person-img" src="{{ STATIC_URL }}img/person.svg">
+                        {% endif %}
+                    </li>
+                    <li class="person-intro-detail gradient-text"><h2>欢迎光临{{ site.site_name | default_if_none:"Shadow Blog" }}</h2></li>
+                    <li class="person-intro-detail"><h3>网站简介：分享精彩人生</h3></li>
+                    <li class="person-intro-detail"><h3>所在地：中国</h3></li>
+                    <li class="person-intro-detail"><h3>爱好：编程</h3></li>
+                    <li class="person-intro-detail"><h3>QQ：666666</h3></li>
+                </ul>
+
+                <div class="column-container">
+                    <ul class="column_box" id="like-box">
+                        <li class="column-title b-b-ece c-29">猜你喜欢</li>
+                        {% for article in like_list %}
+                            <li class="column-category b-b-ece">
+                                <a href="{% url 'articleDetail' article_id=article.id %}">{{ article.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="column-container">
+                    <ul class="column_box" id="like-box">
+                        <li class="column-title b-b-ece c-29">点击排行</li>
+                        {% for article in hot_articles %}
+                            <li class="column-category b-b-ece">
+                                <a href="{% url 'articleDetail' article_id=article.id %}">{{ article.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+
+        </article>
+    </div>
+
+    <!--尾部-->
+    {% include 'foot.html' %}
+    {#    <script type="text/javascript" src="{% static 'js/swiper.min.js' %}"></script>#}
+    {% compress js %}
+        <script type="text/javascript" src="{% static 'js/jquery.lazyload.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/sweetalert.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/myPagination.js' %}"></script>
+    {% endcompress %}
+    <script type="text/javascript">
+        //分页
+        const pagination = new myPagination({
+            id: 'pagination',
+            curPage: {{ article_list.number }}, //初始页码
+            pageTotal: {{ article_list.paginator.num_pages }}, //总页数
+            pageAmount: {{ article_list.paginator.per_page }},  //每页多少条
+            dataTotal: {{ article_list.paginator.count }}, //总共多少条数据
+            pageSize: 3, //可选,分页个数
+            showPageTotalFlag: true, //是否显示数据统计
+            //showSkipInputFlag: true, //是否支持跳转
+            getPage: function (page) {
+                window.location.href = '/?page=' + page;
+            }
+        });
+    </script>
+    </body>
+    </html>
+{% endblock %}

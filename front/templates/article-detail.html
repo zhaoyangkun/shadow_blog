@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>{{ article.title }}</title>
+{% endblock %}
+
+{% block sort %}
+    <div class="nb-a-holder" id="home"><a class="nb-a ta-c" href="/">首页</a></div>
+    <div class="nb-a-holder">
+        <a class="nb-a ta-c" href="{% url 'category_all' %}">分类</a>
+        <ul id="category-ul" class="nav-ul" style="display: none;">
+            {% comment %}                <li class="nav-li nav-li-bd ta-c"><a href="#">HTML</a></li>
+                <li class="nav-li nav-li-bd ta-c"><a href="#">CSS</a></li>
+                <li class="nav-li nav-li-bd ta-c"><a href="#">JS</a></li>
+                <li class="nav-li ta-c"><a href="#">vue.js</a></li>{% endcomment %}
+        </ul>
+    </div>
+    <div class="nb-a-holder"><a class="nb-a ta-c" href="{% url 'label_wall_all' %}">标签墙</a></div>
+    <div class="nb-a-holder"><a class="nb-a ta-c" href="{% url 'archive_all' %}">归档</a></div>
+    <div class="nb-a-holder"><a class="nb-a ta-c" href="{% url 'links' %}">友情链接</a></div>
+{% endblock %}
+
+{% block content %}
+    {% load staticfiles %}
+    {% load compress %}
+    <!DOCTYPE html>
+    <html lang="en" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="HandheldFriendly" content="true">
+        <meta charset="UTF-8">
+        <!--样式-->
+        {% compress css %}
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/global.css">
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/article-detail.css">
+            <link rel="stylesheet"
+                  href="{{ STATIC_URL }}css/code.css">
+            <link rel="stylesheet"
+                  href="{{ STATIC_URL }}css/github-markdown.css">
+            <link rel="stylesheet" href="{{ STATIC_URL }}vditor/css/vditor.classic.css"/>
+        {% endcompress %}
+        <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico"/>
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+        <style>
+            .markdown-body {
+                box-sizing: border-box;
+                min-width: 200px;
+                max-width: 980px;
+                margin: 0 auto;
+                padding: 10px;
+            }
+
+            @media (max-width: 767px) {
+                .markdown-body {
+                    padding: 15px;
+                }
+
+                .markdown-body h1 {
+                    font-size: 1.35em;
+                }
+            }
+
+            .codehilite {
+            {#padding: 15px;#} overflow: auto;
+                border-radius: 8px;
+            }
+
+            .codehilite:hover {
+                box-shadow: 0 0 10px #757575;
+            }
+
+            .article-content img {
+                max-width: 100%;
+            }
+
+        </style>
+    </head>
+    <body>
+
+    <!--主体-->
+    <section class="main">
+
+        <input hidden id="user_id" name="user_id" value="{{ request.session.user_id }}">
+        <input hidden id="article_id" name="article_id" value="{{ article.id }}">
+        <div class="left-box">
+            <div id="outerdiv"
+                 style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
+                <div id="innerdiv" style="position:absolute;"><img id="bigimg" style="border:5px solid #fff;" src=""/>
+                </div>
+            </div>
+            {# 文章内容 #}
+            <div class="article-container">
+                <div class="sort-box">
+                    {#                <span class="at-sort-s fl"><a class="at-sort-a c-666"></a></span>#}
+                    <span class="location fl c-666">
+                    <span class="at-sort-detail c-666">当前位置：
+                    <a href="/">首页</a> >
+                    <a href="/front/category/{{ article.category.parent.category_name }}">{{ article.category.parent.category_name }}</a> >
+                    <a href="/front/label/{{ article.category.category_name }}">{{ article.category.category_name }}</a>
+                    </span>
+                </span>
+                </div>
+                <div class="article-content markdown-body">
+                    {# 取消转义 #}
+                    <h1 style="margin: 10px 0">{{ article.title }}</h1>
+                    <div class="writer-info">
+                        <span style="margin: 5px 0;">作者: </span>
+                        <span id="writer">{{ article.user.user_name }} </span>
+                        <span id="write-time">{{ article.gmt_created | date:'Y-m-d H:i:s' }}</span>
+                        <span>阅读(<span id="read-number">{{ article.read_number }}</span>)</span>
+                        <span>评论(<span id="read-number">{{ article.comment_number }}</span>)</span>
+                    </div>
+                    {{ toc | safe }}
+                    {{ article.content | safe }}
+                </div>
+
+                <div class="prev-next">
+
+                    {% if prev_article %}
+                        <div class="p-div">
+                            <span class="fl">上一篇：</span>
+                            <a class="one-line-overflow fl"
+                               href="{% url 'articleDetail' article_id=prev_article.id %}"
+                               id="prev-a">{{ prev_article.title }}</a>
+                        </div>
+                    {% endif %}
+
+
+                    {% if next_article %}
+                        <div class="n-div">
+                            <span class="fl">下一篇：</span>
+                            <a class="one-line-overflow fl"
+                               href="{% url 'articleDetail' article_id=next_article.id %}"
+                               id="next-a">{{ next_article.title }}</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# 评论内容 #}
+            <div class="comment-container" style="margin-top: 20px;">
+
+                <div class="sort-box">
+                <span class="at-sort-s fl"><a style="box-sizing: content-box;"
+                                              class="at-sort-comment-a c-666">评论</a></span>
+                    <span class="location fl c-666"><a class="at-sort-detail c-666"></a> </span>
+                </div>
+
+                <div class="text-area-holder">
+                    <div id="vditor">
+
+                    </div>
+                    {#                    <textarea id="text-area" placeholder="请输入0~255字的评论" name="content"></textarea>#}
+                    {% comment %}                {{ form.media }}
+                {% for field in form %}
+                    {{ field }}
+                {% endfor %}{% endcomment %}
+                </div>
+
+                <div class="button-line">
+                    <span id="error-info"></span>
+                    <button type="button" id="publish-btn" onclick="check_comment()">发布</button>
+                </div>
+
+                <div class="total-count">
+                    共 <span id="comment-count">{{ comment_list.count }}</span> 条评论
+                </div>
+
+                {% for comment in comment_list %}
+                    <div class="comment-item">
+                        <div class="user-img-box">
+                            {% if comment.user.user_img %}
+                                <img src="{{ MEDIA_URL }}{{ comment.user.user_img }}" id="user-img" alt=""/>
+                            {% else %}
+                                <img src="{{ STATIC_URL }}img/person.svg" id="user-img" alt=""/>
+                            {% endif %}
+                        </div>
+                        <div class="comment-box">
+                            <div class="user-info">
+                                <span class="user-name">{{ comment.user.user_name }}</span>
+                                <span class="publish-time">{{ comment.gmt_created|date:"Y年m月d日 H:i:s" }}</span>
+                            </div>
+
+                            {% if comment.reply_user %}
+                                <div class="reply-box">
+                                    <div class="user-info">
+                                        <span class="reply-user-name">@{{ comment.to_comment.user.user_name }}</span>
+                                        <span class="publish-time">{{ comment.to_comment.gmt_created|date:"Y年m月d日 H:i:s" }}</span>
+                                    </div>
+                                    <div class="comment-content c-666" style="padding-bottom: 5px">
+                                        {{ comment.to_comment.content|safe }}
+                                    </div>
+                                    {#                                <div class="r-icon-line"></div>#}
+                                </div>
+                            {% endif %}
+
+                            <div class="comment-content c-666">
+                                {{ comment.content|safe }}
+                            </div>
+
+                            <div class="icon-line">
+                                {% if comment.user_id == request.session.user_id %}
+                                    <a href="javascript:void(0)" class="delete-icon"
+                                       style="background-image: url('{{ STATIC_URL }}img/delete.svg');"
+                                       onclick="deleteComment({{ comment.id }})"></a>
+                                {% endif %}
+                                <a href="javascript:void(0)" class="comment-icon"
+                                   style="background-image: url('{{ STATIC_URL }}img/comment.svg');"
+                                   onclick="show_reply(this)"></a>
+                                <span class="reply_count c-666">{{ comment.reply_count }}</span>
+                                {% if comment.id not in like_id_list %}
+                                    <a href="javascript:void(0)" class="liked-icon"
+                                       style="background-image: url('{{ STATIC_URL }}img/liked.svg');"
+                                       onclick="like_comment({{ comment.id }})"></a>
+                                {% else %}
+                                    {% for like in like_list %}
+                                        {% if like.comment_id == comment.id and like.is_like == 0 %}
+                                            <a href="javascript:void(0)" class="liked-icon"
+                                               style="background-image: url('{{ STATIC_URL }}img/liked.svg');"
+                                               onclick="like_comment({{ comment.id }})"></a>
+                                        {% elif like.comment_id == comment.id and like.is_like == 1 %}
+                                            <a href="javascript:void(0)" class="liked-icon"
+                                               style="background-image: url('{{ STATIC_URL }}img/liked-on.svg');"
+                                               onclick="like_comment({{ comment.id }})"></a>
+                                        {% endif %}
+                                    {% empty %}
+                                    {% endfor %}
+                                {% endif %}
+                                <span class="liked_count c-666">{{ comment.liked_number }}</span>
+                            </div>
+
+                            <div class="reply-holder" style="display: none;">
+                                {#                                <textarea placeholder="请输入0~255字的评论" class="reply-text-area"></textarea>#}
+                                {#                                <div id="reply-vditor" class="reply-text-area"></div>#}
+                                <input class="reply-btn" type="button"
+                                       onclick="reply_comment(this,{{ comment.id }},{{ comment.user_id }},{{ comment.article_id }})"
+                                       value="回复">
+                            </div>
+
+
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+{% comment %}        <div class="right-box" hidden>
+
+            <div class="column-holder">
+                {{ toc | safe }}
+            </div>
+
+            <div class="column-holder">
+                <ul class="column_box">
+                    <li class="column-title b-b-ece c-29">猜你喜欢</li>
+                    {% for article in article_list %}
+                        <li class="column-category b-b-ece">
+                            <a href="{% url 'articleDetail' article_id=article.id %}">{{ article.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="column-holder" style="margin-top: 20px">
+                <ul class="column_box">
+                    <li class="column-title b-b-ece c-29">点击排行</li>
+                    {% for article in hot_articles %}
+                        <li class="column-category b-b-ece">
+                            <a href="{% url 'articleDetail' article_id=article.id %}">{{ article.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>{% endcomment %}
+    </section>
+
+    <!--尾部-->
+    {% include 'foot.html' %}
+    <!--脚本-->
+    {% compress js %}
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.4.1.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/sweetalert.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}vditor/js/vditor.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/global.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/article-detail.js"></script>
+    {% endcompress %}
+    </body>
+    </html>
+{% endblock %}

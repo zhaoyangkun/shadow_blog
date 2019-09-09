@@ -1,0 +1,95 @@
+@charset "UTF-8";
+
+* {
+    /*box-sizing: inherit;*/
+}
+
+.big-container {
+    width: 100%;
+}
+
+article {
+    min-height: 550px;
+    width: 1152px;
+    margin: 10px auto;
+    display: block;
+    overflow: hidden;
+}
+
+.result-box {
+    width: 755px;
+    margin: 0 auto;
+    overflow: visible;
+    padding-bottom: 5px;
+}
+
+#article-holder {
+    width: 100%;
+    float: left
+}
+
+
+.article-box {
+    float: left;
+    width: 745px;
+    margin: 15px 10px;
+    height: 280px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.5s;
+}
+
+.article-box:hover {
+    box-shadow: 0 0 10px #767676;
+}
+
+.ab-content {
+    width: 98%;
+    margin: 0 1%;
+    padding-bottom: 10px;
+    height: 280px;
+    line-height: 280px;
+    text-align: center;
+}
+
+/*响应式尺寸*/
+@media (max-width: 1024px) {
+    article {
+        width: 100%;
+        margin: 0 auto;
+        padding-top: 60px;
+        padding-bottom: 10px;
+    }
+
+    .result-box {
+        width: 96%;
+        margin: 0 2%;
+        clear: both;
+    }
+
+    #article-holder {
+        width: 100%;
+        float: left
+    }
+
+    .article-box {
+        width: 98%;
+        height: auto;
+        margin: 5px 1%;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,156 @@
+{% load staticfiles %}
+{% load compress %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+    <meta charset="utf-8">
+    <title>登录</title>
+    {% compress css %}
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/global.css">
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/login.css">
+    {% endcompress %}
+    <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico"/>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="main">
+    <div class="form">
+        {% csrf_token %}
+        <a class="on" id="landing" href="javascript:void(0);">登录</a>
+        <a class="not-on" id="registered" href="javascript:void(0);">注册</a>
+        <div class="fix"></div>
+
+        <form type="POST" action="{% url 'login' %}" id="landing-content" data-form="ajax">
+            {#            <div id="photo"><img src="{{ STATIC_URL }}img/person-img.jpg" alt="img"/></div>#}
+            {#            <div class="inp"></div>#}
+            {% csrf_token %}
+            <div class="auth-inp">
+                <div id="icon-box"><a onclick="github_login()" class="git-icon" href="javascript:void(0);"></a></div>
+                <div class="tips">
+                    <p class="fl">Github授权登录</p>
+                </div>
+            </div>
+            <!--错误信息提示-->
+            <span class="error ta-c">
+                {% if error %}
+                    {{ error }}
+                {% endif %}
+            </span>
+            <!--错误信息提示-->
+            <div class="inp" style="margin-top: 0">
+                <label>
+                    <input class="inp-input" data-block="true" type="text" data-required="请输入用户名或者邮箱" id="user_name"
+                           name="user_name" placeholder="用户名或者邮箱"/>
+                </label>
+            </div>
+            <div class="inp"><label><input class="inp-input" data-block="true" type="password" data-required="请输入密码"
+                                           id="pwd" name="pwd" placeholder="密码"/></label>
+            </div>
+            <div class="inp"><label><input class="inp-input" data-block="true" type="text" id="code" name="code"
+                                           data-required="请输入验证码"
+                                           placeholder="输入验证码"/></label></div>
+            <div class="code-box" style="cursor: pointer;"><img id="code_img" src="{% url 'code' %}" alt=""/></div>
+            <button id="login" type="submit" class="login">登录</button>
+            <div id="bottom">
+                <a href="{% url 'index' %}" id="registeredtxt">回到首页</a>
+                <a href="javascript:void(0);" id="forgotpassword">立即注册</a>
+            </div>
+        </form>
+    </div>
+</div>
+<!--尾部-->
+{% include 'foot.html' %}
+{% compress js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/verJs/verJs.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/sweetalert.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/login.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/global.js"></script>
+{% endcompress %}
+<script type="text/javascript">
+    $(function () {
+        {#browserRedirect("{% url 'mobileLoginPage' %}");#}
+    });
+
+    $("#code_img").click(function () {
+        $(this).attr("src", "{% url 'code' %}" + "?" + Math.random());
+    });
+
+    const verJs_login = new VerJs({
+        form: "#landing-content",
+        success: function (data) {
+            data = JSON.parse(data);
+            if (data.code === 1) {
+                swal({
+                    text: data.msg,
+                    icon: "success",
+                    timer: 1500
+                }).then((value) => {
+                    //跳转至首页
+                    window.location.href = "/";
+                });
+                setTimeout("window.location.href = '/'", 1500);
+            } else if (data.code === 0) {
+                swal({
+                    text: data.msg,
+                    icon: "error",
+                    timer: 1500
+                }).then((value) => {
+                    $("#code_img").click();
+                });
+            } else if (data.code === 2) {
+                swal({
+                    text: data.msg,
+                    icon: "success",
+                    timer: 1500
+                }).then((value) => {
+                    //跳转至后台首页
+                    window.location.href = "{% url 'adminIndex' %}";
+                });
+                setTimeout("window.location.href = '/admin'", 1500);
+            }
+        },
+        fail: function (data) {
+            console.log(data);
+        }
+    });
+    $(".git-icon").mouseenter(function (e) {
+        $(".tips").stop(true).slideToggle(300);
+    });
+
+    $(".git-icon").mouseleave(function (e) {
+        $(".tips").stop(true).slideToggle(300);
+    });
+
+    function github_login() {
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'oauth:github_login' %}",
+            headers: {'X-CSRFToken': getCsrfToken()},
+            dataType: 'JSON',
+            success: function (data) {
+                if (data.code === 1) {
+                    swal({text: data.msg, icon: "success", timer: 1500}).then((value) => {
+                        window.location.href = data.data;
+                    });
+                    setTimeout('window.location.href=' + data.data, 1500);
+                } else if (data.code === 0) {
+                    swal({text: data.msg, icon: "error", timer: 1500});
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+</script>
+</body>
+
+</html>

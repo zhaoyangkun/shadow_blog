@@ -1,0 +1,162 @@
+{% load staticfiles %}
+{% load compress %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+    <meta charset="UTF-8">
+    <meta name="keywords" content="{{ site.keywords }}"/>
+    <meta name="description" content="{{ site.description }}">
+    <meta name="author" content="{{ site.author }}">
+    {% block title %}
+        <title>首页</title>
+    {% endblock %}
+    <!--样式-->
+    {% compress css %}
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/global.css">
+    {% endcompress %}
+    {% if site.logo %}
+        <link rel="shortcut icon" href="{{ MEDIA_URL }}{{ site.logo }}"/>
+    {% else %}
+        <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico"/>
+    {% endif %}
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!--导航栏-->
+<div class="nav-bar-holder">
+    <div class="nav-bar" id="nav-bar">
+        <!--logo-->
+        <div class="logo-box">
+            <a href="" class="blog-title ta-c">
+                {% if site.logo %}
+                    <img alt="logo" src="{{ MEDIA_URL }}{{ site.logo }}"/>
+                {% else %}
+                    <img alt="logo" src="{{ STATIC_URL }}img/logo.jpg"/>
+                {% endif %}
+            </a>
+        </div>
+
+        {% block sort %}
+            <div class="nb-a-holder" id="home"><a class="nb-a ta-c" href="/">首页</a></div>
+            <div class="nb-a-holder">
+                <a class="nb-a ta-c" href="{% url 'category_all' %}">分类</a>
+                <ul id="category-ul" class="nav-ul" style="display: none;">
+                </ul>
+            </div>
+            <div class="nb-a-holder"><a class="nb-a ta-c" href="{% url 'label_wall_all' %}">标签墙</a></div>
+            <div class="nb-a-holder"><a class="nb-a ta-c" href="{% url 'archive_all' %}">归档</a></div>
+            <div class="nb-a-holder"><a class="nb-a ta-c" href="{% url 'links' %}">友情链接</a></div>
+        {% endblock %}
+        <div id="search-nb">
+            <span class="search-s fl">
+                <label for="search-input"></label><input class="fl" type="text" id="search-input" placeholder="请输入关键字">
+                <a class="search-icon fl" onclick="search_by_key()" href="javascript:void(0);"></a>
+            </span>
+        </div>
+        <div class="nb-a-holder-last">
+            {% if request.session.user_name %}
+                <div class="nb-a-holder-small">
+                    <a class="a-login" href="#">{{ request.session.user_name }}</a>
+                    <ul class="nav-ul-m" style="display: none">
+                        <li class="nav-li-m ta-c"><a href="{% url 'userCenterDis' %}">个人中心</a></li>
+                        {% if request.session.user_authority == 1 %}
+                            <li class="nav-li-m ta-c"><a href="{% url 'adminIndex' %}">后台管理</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="nb-a-holder-small">
+                    <a class="a-login" id="logout" onclick="logout()" href="javascript:void(0);">注销</a>
+                </div>
+            {% else %}
+                <div class="nb-a-holder-small">
+                    <a class="a-login" href="{% url 'loginDis' %}">登录</a>
+                </div>
+                <div class="nb-a-holder-small">
+                    <a class="a-login" href="{% url 'regDis' %}">注册</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="mobile-nav">
+    <div class="logo-box">
+        <a href="/" class="blog-title ta-c">
+            {% if site.logo %}
+                <img style="vertical-align: top;" alt="logo" src="{{ MEDIA_URL }}{{ site.logo }}"/>
+            {% else %}
+                <img style="vertical-align: top;" alt="logo" src="{% static 'img/logo_2.png' %}"/>
+            {% endif %}
+
+        </a>
+    </div>
+    <a id="mobile_cate" style="background-image: url('{{ STATIC_URL }}img/cate.svg')" href="javascript:void(0);"></a>
+</div>
+
+<ul id="nav-m-list">
+    <li id="cancel-li"><a class="fr" id="cancel" href="javascript:void(0);"></a></li>
+    <li id="m-img-li">
+        {% if root_user.user_img %}
+            <img id="m-img" alt="{{ root_user.user_name }}" src="{{ MEDIA_URL }}{{ root_user.user_img }}">
+        {% else %}
+            <img id="m-img" alt="{{ root_user.user_name }}" src="{{ STATIC_URL }}img/person.svg">
+        {% endif %}
+    </li>
+    <li>
+        <span class="search-s fl">
+            <label for="search-input-m"></label><input class="fl" type="text" id="search-input-m" placeholder="关键词">
+            <a class="search-icon fl" onclick="m_search()" href="javascript:void(0);"></a>
+        </span>
+    </li>
+    <li><a class="w-h-100 fl" href="/">首页</a></li>
+    {% if request.session.user_name %}
+        <li><a class="w-h-100 fl" href="{% url 'userCenterDis' %}">{{ request.session.user_name }}</a></li>
+        {#        <li><a href="{% url 'userCenterDis' %}">个人中心</a></li>#}
+        <li><a class="w-h-100 fl" onclick="logout()" href="javascript:void(0);">注销</a></li>
+        {% if request.session.user_authority == 1 %}
+            <li><a href="{% url 'adminIndex' %}">后台管理</a></li>
+        {% endif %}
+    {% else %}
+        <li><a class="w-h-100 fl" href="{% url 'loginDis' %}">登录</a></li>
+        <li><a class="w-h-100" href="{% url 'regDis' %}">注册</a></li>
+    {% endif %}
+    <li><a class="w-h-100 fl" href="{% url 'category_all' %}">分类</a></li>
+    <li><a class="w-h-100 fl" href="{% url 'label_wall_all' %}">标签墙</a></li>
+    <li><a class="w-h-100 fl" href="{% url 'archive_all' %}">归档</a></li>
+    <li><a class="w-h-100 fl" href="{% url 'links' %}">友情链接</a></li>
+</ul>
+<!--脚本-->
+{% compress js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/global.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/top.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/base.js"></script>
+{% endcompress %}
+
+{% block content %}
+{% endblock %}
+
+{% block baidu_js %}
+    <script>
+        //百度站长推送，可去掉
+        (function () {
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            } else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+{% endblock %}
+</body>
+</html>
