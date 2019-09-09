@@ -85,16 +85,16 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 输入127.0.0.1:8000/admin进入后台管理。
 
 ## 部分功能截图
-[![ntV4AK.md.png](https://s2.ax1x.com/2019/09/09/ntV4AK.md.png)](https://imgchr.com/i/ntV4AK)
+![ntKCmd.png](https://s2.ax1x.com/2019/09/09/ntKCmd.png)
 
-[![ntVRn1.md.png](https://s2.ax1x.com/2019/09/09/ntVRn1.md.png)](https://imgchr.com/i/ntVRn1)
+![ntKS6e.png](https://s2.ax1x.com/2019/09/09/ntKS6e.png)
 
-[![ntVW0x.md.png](https://s2.ax1x.com/2019/09/09/ntVW0x.md.png)](https://imgchr.com/i/ntVW0x)
+![ntuzlD.png](https://s2.ax1x.com/2019/09/09/ntuzlD.png)
 
-[![ntna2F.md.png](https://s2.ax1x.com/2019/09/09/ntna2F.md.png)](https://imgchr.com/i/ntna2F)
+![ntuxSO.png](https://s2.ax1x.com/2019/09/09/ntuxSO.png)
 
-[![ntndv4.md.png](https://s2.ax1x.com/2019/09/09/ntndv4.md.png)](https://imgchr.com/i/ntndv4)
+![ntujfK.png](https://s2.ax1x.com/2019/09/09/ntujfK.png)
 
-[![ntVcc9.md.png](https://s2.ax1x.com/2019/09/09/ntVcc9.md.png)](https://imgchr.com/i/ntVcc9)
+![ntKP0A.png](https://s2.ax1x.com/2019/09/09/ntKP0A.png)
 
-[![ntVgXR.md.png](https://s2.ax1x.com/2019/09/09/ntVgXR.md.png)](https://imgchr.com/i/ntVgXR)
+![ntKpOH.png](https://s2.ax1x.com/2019/09/09/ntKpOH.png)
