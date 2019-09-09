@@ -50,23 +50,51 @@ shadow_blog是一款基于Django的极简主义个人博客，已应用在[苍�
 
 ## 使用说明
 
-- 本项目依赖于python,pip和redis环境，请先配置好这些环境。python版本最好选择3.5以上的。
+1. 本项目依赖于python,pip和redis环境，请先配置好这些环境。python版本最好选择3.5以上的。
 
-- 克隆项目至本地，创建虚拟环境（不创建也可以），再进入项目根目录，执行命令
+2. 克隆项目至本地，创建虚拟环境（不创建也可以），再进入项目根目录，执行命令
 pip install -r requirements.txt安装环境依赖，继续依次执行python manage.py makemigrations和
 python manage.py migrate生成数据库。
 
-- 由于项目用到了github授权登录和异步邮箱发送验证码，需要在settings.py中配置授权登录参数和SMTP邮箱信息。
+3. 由于项目用到了github授权登录和异步邮箱发送验证码，需要在settings.py中配置授权登录参数和SMTP邮箱信息。
 
-- 修改settings.py中的以下有关信息。
+4. 修改settings.py中的以下有关信息。
 
-- 在项目根目录执行python manage.py runserver 127.0.0.1:8000，使项目运行起来。
+```python
+# github授权登录
+GITHUB_CLIENT_ID = '******'
+GITHUB_CLIENT_SECRET = '******'
+GITHUB_CALLBACK_URL = 'https://******'  # 填写你的回调地址
 
-- 在项目根目录执行celery -A celery_tasks worker -l info -P eventlet启动celery任务。
+# 邮件配置
+EMAIL_USE_SSL = True
+EMAIL_HOST = 'smtp.163.com'  # 如果是 163 改成 smtp.163.com，QQ 邮箱改为为 smtp.qq.com
+EMAIL_PORT = 465
+EMAIL_HOST_USER = '******@163.com'  # 帐号
+EMAIL_HOST_PASSWORD = '******'  # 授权码
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+```
 
-- 在浏览器中访问127.0.0.1:8000，默认第一个注册用户或者第一个用github授权登录用户为管理员。
+5. 在项目根目录执行python manage.py runserver 127.0.0.1:8000，使项目运行起来。
 
-- 用刚刚注册的用户登录，登录之后在首页将鼠标移到右上方的用户名可以看到后台管理，进入即可。或者在登录之后手动
+6. 在项目根目录执行celery -A celery_tasks worker -l info -P eventlet启动celery任务。
+
+7. 在浏览器中访问127.0.0.1:8000，默认第一个注册用户或者第一个用github授权登录用户为管理员。
+
+8. 用刚刚注册的用户登录，登录之后在首页将鼠标移到右上方的用户名可以看到后台管理，进入即可。或者在登录之后手动
 输入127.0.0.1:8000/admin进入后台管理。
 
 ## 部分功能截图
+[![ntV4AK.md.png](https://s2.ax1x.com/2019/09/09/ntV4AK.md.png)](https://imgchr.com/i/ntV4AK)
+
+[![ntVRn1.md.png](https://s2.ax1x.com/2019/09/09/ntVRn1.md.png)](https://imgchr.com/i/ntVRn1)
+
+[![ntVW0x.md.png](https://s2.ax1x.com/2019/09/09/ntVW0x.md.png)](https://imgchr.com/i/ntVW0x)
+
+[![ntna2F.md.png](https://s2.ax1x.com/2019/09/09/ntna2F.md.png)](https://imgchr.com/i/ntna2F)
+
+[![ntndv4.md.png](https://s2.ax1x.com/2019/09/09/ntndv4.md.png)](https://imgchr.com/i/ntndv4)
+
+[![ntVcc9.md.png](https://s2.ax1x.com/2019/09/09/ntVcc9.md.png)](https://imgchr.com/i/ntVcc9)
+
+[![ntVgXR.md.png](https://s2.ax1x.com/2019/09/09/ntVgXR.md.png)](https://imgchr.com/i/ntVgXR)
