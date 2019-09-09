@@ -2,6 +2,8 @@
 
 ## 介绍
 
+项目地址-https://github.com/zhaoyangkun/shadow_blog
+
 shadow_blog是一款基于Django的极简主义个人博客，已应用在[苍茫误此生博客](https://www.cangmangai.cn/)
 
 前端基于[Boundless-UI](https://github.com/zhaoyangkun/Boundless-UI)，风格简约。支持响应式布局，
