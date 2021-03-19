@@ -7,7 +7,7 @@ django-appconf==1.0.3
 django-celery==3.3.1
 django-compressor==2.3
 django-cors-headers==3.1.0
-djangorestframework==3.10.3
+djangorestframework==3.11.2
 dnspython==1.16.0
 eventlet==0.25.1
 greenlet==0.4.15
