@@ -9,7 +9,7 @@ django-compressor==2.3
 django-cors-headers==3.1.0
 djangorestframework==3.10.3
 dnspython==1.16.0
-eventlet==0.25.1
+eventlet==0.31.0
 greenlet==0.4.15
 kombu==3.0.37
 Markdown==3.1.1
