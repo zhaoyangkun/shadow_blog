@@ -14,7 +14,7 @@ greenlet==0.4.15
 kombu==3.0.37
 Markdown==3.1.1
 monotonic==1.5
-Pillow==6.1.0
+Pillow==9.3.0
 Pygments==2.4.2
 pytz==2019.2
 rcssmin==1.0.6
